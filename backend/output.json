@@ -1,0 +1,115 @@
+{
+  "metadata": {
+    "root_path": "U:\\c",
+    "generated_at": "2025-11-29T20:20:33.661904",
+    "version": "1.0.0"
+  },
+  "statistics": {
+    "total_files": 1,
+    "total_functions": 4,
+    "total_classes": 1,
+    "total_chunks": 5,
+    "languages": {
+      "python": 1
+    }
+  },
+  "files": [
+    {
+      "path": "U:\\c\\ads_image_scraper.py",
+      "relative_path": "ads_image_scraper.py",
+      "size_bytes": 3799,
+      "modified_time": "2025-10-20T19:33:06.697021",
+      "language": "python",
+      "has_parse_errors": false,
+      "functions": [
+        {
+          "name": "__init__",
+          "start_line": 25,
+          "end_line": 38,
+          "type": "function",
+          "language": "python"
+        },
+        {
+          "name": "sanitize_filename",
+          "start_line": 41,
+          "end_line": 42,
+          "type": "function",
+          "language": "python"
+        },
+        {
+          "name": "start_requests",
+          "start_line": 44,
+          "end_line": 52,
+          "type": "function",
+          "language": "python"
+        },
+        {
+          "name": "parse",
+          "start_line": 54,
+          "end_line": 113,
+          "type": "function",
+          "language": "python"
+        }
+      ],
+      "classes": [
+        {
+          "name": "BingRealAdsSpider",
+          "start_line": 11,
+          "end_line": 113,
+          "type": "class",
+          "language": "python"
+        }
+      ],
+      "function_count": 4,
+      "class_count": 1,
+      "chunks": [
+        {
+          "chunk_id": "9ee3dd32e75c4e590d83b986c3f27c8977946ba9",
+          "file_path": "U:\\c\\ads_image_scraper.py",
+          "start_line": 1,
+          "end_line": 24,
+          "content": "import scrapy\nimport urllib.parse\nimport os\nimport hashlib\nimport json\nimport re\nimport requests\nfrom PIL import Image\nfrom io import BytesIO\n\nclass BingRealAdsSpider(scrapy.Spider):\n    name = \"ads_image_spider\"\n\n    # Hardcoded paths\n    IMAGE_DIR = r\"U:\\c\\ads_dataset\\images\"\n    JSON_PATH = r\"U:\\c\\ads_dataset\\metadata.json\"\n\n    # Categories, sentiments, emotions\n    ad_categories = [\"Technology\", \"Food\", \"Fashion\", \"Automobile\", \"Travel\"]\n\n\n    images_per_query = 5\n    max_ads = 1000\n",
+          "token_count": 74,
+          "language": "python"
+        },
+        {
+          "chunk_id": "40b524a4dc957795b57a8a051dc4c28848c0a5de",
+          "file_path": "U:\\c\\ads_image_scraper.py",
+          "start_line": 25,
+          "end_line": 38,
+          "content": "    def __init__(self, *args, **kwargs):\n        super().__init__(*args, **kwargs)\n        os.makedirs(self.IMAGE_DIR, exist_ok=True)\n\n        # Load existing metadata\n        if os.path.exists(self.JSON_PATH):\n            with open(self.JSON_PATH, \"r\") as f:\n                self.metadata = json.load(f)\n        else:\n            self.metadata = []\n\n        # Track duplicates\n        self.downloaded_hashes = set(item[\"hash\"] for item in self.metadata if \"hash\" in item)\n        self.total_downloaded = len(self.metadata)",
+          "token_count": 78,
+          "language": "python"
+        },
+        {
+          "chunk_id": "68665bac40672205d2199db2a61d0ce38610236e",
+          "file_path": "U:\\c\\ads_image_scraper.py",
+          "start_line": 41,
+          "end_line": 42,
+          "content": "    def sanitize_filename(self, filename):\n        return re.sub(r'[<>:\"/\\\\|?*]', '_', filename)",
+          "token_count": 13,
+          "language": "python"
+        },
+        {
+          "chunk_id": "401f8c9b24697f4d257356b01f31502004e20a9d",
+          "file_path": "U:\\c\\ads_image_scraper.py",
+          "start_line": 44,
+          "end_line": 52,
+          "content": "    def start_requests(self):\n        for category in self.ad_categories:\n\n                    if self.total_downloaded >= self.max_ads:\n                        return\n                    # Add 'real' and site-specific keywords\n                    query = f'\"advertisement \"+\"{category}\"+\"single banner\"'\n                    url = f\"https://www.bing.com/images/search?q={urllib.parse.quote(query)}&qft=+filterui:imagesize-large&form=IRFLTR\"\n                    yield scrapy.Request(url=url, callback=self.parse, meta={'query': query})",
+          "token_count": 72,
+          "language": "python"
+        },
+        {
+          "chunk_id": "bf4d3fc8de3e33fb17901eed24a5e7fe1eb93a5c",
+          "file_path": "U:\\c\\ads_image_scraper.py",
+          "start_line": 54,
+          "end_line": 113,
+          "content": "    def parse(self, response):\n        if self.total_downloaded >= self.max_ads:\n            return\n\n        anchors = response.css(\"a.iusc\")\n        count = 0\n        for a in anchors:\n            if count >= self.images_per_query or self.total_downloaded >= self.max_ads:\n                break\n\n            m_json = a.attrib.get(\"m\")\n            if not m_json:\n                continue\n            # Extract image URL\n            match = re.search(r'\"murl\":\"(.*?)\"', m_json)\n            if not match:\n                continue\n            img_url = match.group(1)\n            if not img_url.startswith(\"http\"):\n                continue\n\n            # Download image\n            try:\n                img_data = requests.get(img_url, timeout=10).content\n            except:\n                continue\n            # Filter tiny images\n            if len(img_data) < 50000:  # 50 KB minimum\n                continue\n\n            # Check duplicate\n            img_hash = hashlib.md5(img_data).hexdigest()\n            if img_hash in self.downloaded_hashes:\n                continue\n\n            # Save as JPG\n            try:\n                image = Image.open(BytesIO(img_data)).convert(\"RGB\")\n            except:\n                continue\n\n            query = response.meta['query']\n            filename_safe = self.sanitize_filename(f\"{query}_{img_url.split('/')[-1]}.jpg\")\n            path = os.path.join(self.IMAGE_DIR, filename_safe)\n            image.save(path, format=\"JPEG\")\n\n            # Update metadata\n            self.downloaded_hashes.add(img_hash)\n            self.total_downloaded += 1\n            self.metadata.append({\n                \"query\": query,\n                \"url\": img_url,\n                \"path\": path,\n                \"hash\": img_hash\n            })\n            with open(self.JSON_PATH, \"w\") as f:\n                json.dump(self.metadata, f, indent=2)\n\n            self.log(f\"Saved image {path} ({self.total_downloaded}/{self.max_ads})\")\n            count += 1",
+          "token_count": 239,
+          "language": "python"
+        }
+      ],
+      "chunk_count": 5
+    }
+  ]
+}

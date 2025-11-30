@@ -1,0 +1,17 @@
+{
+  "root_path": "U:\\c",
+  "total_files": 1,
+  "languages": {
+    "python": 1
+  },
+  "timestamp": "2025-11-29T20:04:13.061451",
+  "files": [
+    {
+      "path": "U:\\c\\ads_image_scraper.py",
+      "relative_path": "ads_image_scraper.py",
+      "size_bytes": 3799,
+      "modified_time": "2025-10-20T19:33:06.697021",
+      "language": "python"
+    }
+  ]
+}
