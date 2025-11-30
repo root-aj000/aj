@@ -1,32 +1,35 @@
-{}
+{
+  "name": "vibe-agent-frontend",
   "version": "1.1.0",
-"private": true,
-"scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "start": "next start",
-  "lint": "next lint"
-},
-"dependencies": {
-  "next": "14.0.0",
-  "react": "^18",
-  "react-dom": "^18",
-  "zustand": "^4.4.6",
-  "axios": "^1.6.2",
-  "monaco-editor": "^0.45.0",
-  "@monaco-editor/react": "^4.6.0",
-  "diff": "^5.1.0"
-},
-"devDependencies": {
-  "typescript": "^5",
-  "@types/node": "^20",
-  "@types/react": "^18",
-  "@types/react-dom": "^18",
-  "@types/diff": "^5.0.8",
-  "autoprefixer": "^10.0.1",
-  "postcss": "^8",
-  "tailwindcss": "^3.3.0",
-  "eslint": "^8",
-  "eslint-config-next": "14.0.0"
-}
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "14.0.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "zustand": "^4.4.6",
+    "axios": "^1.6.2",
+    "monaco-editor": "^0.45.0",
+    "@monaco-editor/react": "^4.6.0",
+    "diff": "^5.1.0",
+    "d3": "^7.8.5"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/diff": "^5.0.8",
+    "@types/d3": "^7.4.3",
+    "autoprefixer": "^10.0.1",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.0"
+  }
 }

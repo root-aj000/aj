@@ -4,7 +4,7 @@ FastAPI Main Application
 Entry point for the Vibe Agent backend API.
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
@@ -59,7 +59,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Vibe Coding AI Agent",
     description="Autonomous Full-Stack Repository Intelligence System",
-    version="1.0.0",
+    version="1.1.0",
     lifespan=lifespan
 )
 
@@ -82,7 +82,7 @@ async def health_check():
     return {
         "status": "ok",
         "service": "vibe-agent-backend",
-        "version": "1.0.0"
+        "version": "1.1.0"
     }
 
 
@@ -92,7 +92,7 @@ async def root():
     """Root endpoint with API information."""
     return {
         "name": "Vibe Coding AI Agent API",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "description": "Autonomous Repository Intelligence System",
         "docs": "/docs",
         "health": "/health"
@@ -113,14 +113,40 @@ async def global_exception_handler(request, exc):
     )
 
 
-# Import and register routers
+# Import and register v1.0 routers
 from .routes import indexing, debug, chat, search, graph
 
-app.include_router(indexing.router)
-app.include_router(debug.router)
-app.include_router(chat.router)
-app.include_router(search.router)
-app.include_router(graph.router)
+app.include_router(indexing.router, prefix="/index", tags=["indexing"])
+app.include_router(debug.router, prefix="/debug", tags=["debug"])
+app.include_router(chat.router, prefix="/chat", tags=["chat"])
+app.include_router(search.router, prefix="/search", tags=["search"])
+app.include_router(graph.router, prefix="/graph", tags=["graph"])
+
+# Import and register v1.1 routes
+from .routes.v1_1_routes import router as v1_1_router
+app.include_router(v1_1_router, prefix="/api/v1.1", tags=["v1.1"])
+
+# WebSocket routes
+from .websocket_handler import (
+    websocket_indexing_progress,
+    websocket_chat_stream,
+    websocket_agent_execution,
+)
+
+@app.websocket("/ws/indexing/{session_id}")
+async def ws_indexing(websocket: WebSocket, session_id: str):
+    """WebSocket endpoint for indexing progress."""
+    await websocket_indexing_progress(websocket, session_id)
+
+@app.websocket("/ws/chat/{session_id}")
+async def ws_chat(websocket: WebSocket, session_id: str):
+    """WebSocket endpoint for chat streaming."""
+    await websocket_chat_stream(websocket, session_id)
+
+@app.websocket("/ws/agent/{task_id}")
+async def ws_agent(websocket: WebSocket, task_id: str):
+    """WebSocket endpoint for agent execution."""
+    await websocket_agent_execution(websocket, task_id)
 
 
 if __name__ == "__main__":
