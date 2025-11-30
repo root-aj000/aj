@@ -85,28 +85,28 @@ export default function GraphPage() {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                             <div className="card bg-indigo-900/30 border-indigo-700">
                                 <div className="text-3xl font-bold text-indigo-400">
-                                    {stats.nodes.functions}
+                                    {stats.nodes?.functions || 0}
                                 </div>
                                 <div className="text-sm text-slate-400">Functions</div>
                             </div>
 
                             <div className="card bg-purple-900/30 border-purple-700">
                                 <div className="text-3xl font-bold text-purple-400">
-                                    {stats.nodes.classes}
+                                    {stats.nodes?.classes || 0}
                                 </div>
                                 <div className="text-sm text-slate-400">Classes</div>
                             </div>
 
                             <div className="card bg-pink-900/30 border-pink-700">
                                 <div className="text-3xl font-bold text-pink-400">
-                                    {stats.nodes.files}
+                                    {stats.nodes?.files || 0}
                                 </div>
                                 <div className="text-sm text-slate-400">Files</div>
                             </div>
 
                             <div className="card bg-green-900/30 border-green-700">
                                 <div className="text-3xl font-bold text-green-400">
-                                    {stats.relationships.calls}
+                                    {stats.relationships?.calls || 0}
                                 </div>
                                 <div className="text-sm text-slate-400">Call Relations</div>
                             </div>

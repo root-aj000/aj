@@ -11,7 +11,7 @@ export default function IndexPage() {
 
     const startIndexing = async () => {
         try {
-            const response = await fetch('http://localhost:8000/index/start', {
+            const response = await fetch('http://localhost:8000/index_file/start', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -39,7 +39,7 @@ export default function IndexPage() {
     const pollStatus = async (sessionId: string) => {
         const interval = setInterval(async () => {
             try {
-                const response = await fetch(`http://localhost:8000/index/status/${sessionId}`);
+                const response = await fetch(`http://localhost:8000/index_file/status/${sessionId}`);
                 const data = await response.json();
 
                 setIndexing({

@@ -12,7 +12,7 @@ import uuid
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/index", tags=["indexing"])
+router = APIRouter(prefix="/index_file", tags=["indexing"])
 
 
 class IndexRequest(BaseModel):

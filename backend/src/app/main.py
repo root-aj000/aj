@@ -43,16 +43,16 @@ async def lifespan(app: FastAPI):
     Lifespan context manager for startup and shutdown events.
     """
     # Startup
-    logger.info("🚀 Starting Vibe Agent Backend...")
+    logger.info("Starting Vibe Agent Backend...")
     settings = get_settings()
     settings.ensure_directories()
-    logger.info(f"✅ Configuration loaded from: {settings.Config.env_file}")
-    logger.info(f"📦 Target repository: {settings.target_repo_path or 'Not set'}")
+    logger.info(f"Configuration loaded from: {settings.Config.env_file}")
+    logger.info(f"Target repository: {settings.target_repo_path or 'Not set'}")
     
     yield
     
     # Shutdown
-    logger.info("👋 Shutting down Vibe Agent Backend...")
+    logger.info("Shutting down Vibe Agent Backend...")
 
 
 # Create FastAPI app
@@ -116,7 +116,7 @@ async def global_exception_handler(request, exc):
 # Import and register v1.0 routers
 from .routes import indexing, debug, chat, search, graph
 
-app.include_router(indexing.router, prefix="/index", tags=["indexing"])
+app.include_router(indexing.router, prefix="/index_file", tags=["indexing"])
 app.include_router(debug.router, prefix="/debug", tags=["debug"])
 app.include_router(chat.router, prefix="/chat", tags=["chat"])
 app.include_router(search.router, prefix="/search", tags=["search"])

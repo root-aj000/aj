@@ -3,7 +3,6 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   experimental: {
-    serverActions: true,
   },
   webpack: (config) => {
     // Fix for Monaco Editor

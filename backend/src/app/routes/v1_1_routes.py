@@ -25,7 +25,7 @@ class ApplyPatchRequest(BaseModel):
     """Request to apply a patch."""
     file_path: str
     patch_content: str
-    validate: bool = True
+    should_validate: bool = True
     dry_run: bool = False
 
 
@@ -46,11 +46,11 @@ async def apply_patch(request: ApplyPatchRequest):
             'success': True,
             'file': request.file_path,
             'dry_run': request.dry_run,
-            'validated': request.validate,
+            'validated': request.should_validate,
             'validation_results': {},
         }
         
-        if request.validate:
+        if request.should_validate:
             # Run validation
             result['validation_results'] = {
                 'syntax': {'passed': True},

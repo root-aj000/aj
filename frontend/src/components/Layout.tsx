@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     const navItems = [
         { href: '/', label: 'Chat', icon: '💬' },
-        { href: '/index', label: 'Index', icon: '📁' },
+        { href: '/index_file', label: 'Index', icon: '📁' },
         { href: '/search', label: 'Search', icon: '🔍' },
         { href: '/graph', label: 'Graph', icon: '🕸️' },
         { href: '/settings', label: 'Settings', icon: '⚙️' },
@@ -38,8 +38,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${pathname === item.href
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'text-slate-300 hover:bg-slate-700'
+                                ? 'bg-indigo-600 text-white'
+                                : 'text-slate-300 hover:bg-slate-700'
                                 }`}
                         >
                             <span className="text-xl">{item.icon}</span>
