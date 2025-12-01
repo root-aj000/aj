@@ -100,7 +100,7 @@ def generate_output(root_directory, output_file):
 
 
 if __name__ == "__main__":
-    filename = "scripts"
+    filename = "frontend"
     root_dir = f"U:/vibe-agent/{filename}"
     output_file = f"U:/vibe-agent/context/{filename}.json"
     generate_output(root_dir, output_file)

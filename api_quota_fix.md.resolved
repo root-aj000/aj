@@ -1,0 +1,142 @@
+# Route Updates and API Quota Fix
+
+## Summary of Changes
+
+I've updated the backend routes to replace placeholder implementations with actual functionality:
+
+### ✅ Updated Routes
+
+1. **[chat.py](file:///u:/vibe-agent/backend/src/app/routes/chat.py)** - Integrated Gemini LLM and ChromaDB context retrieval
+2. **[indexing.py](file:///u:/vibe-agent/backend/src/app/routes/indexing.py)** - Implemented full indexing pipeline
+3. **[search.py](file:///u:/vibe-agent/backend/src/app/routes/search.py)** - Added semantic search with ChromaDB and embedding service
+4. **[graph.py](file:///u:/vibe-agent/backend/src/app/routes/graph.py)** - Implemented Neo4j graph queries
+
+### 📝 Not Updated (Advanced Features)
+
+- **debug.py** - Requires complex agent orchestration for bug localization
+- **v1_1_routes.py** - Advanced features (CFG, symbol lineage, patch validation) - these are V1.1 features
+
+---
+
+## ❌ Current Issues
+
+### 1. ChromaDB Not Installed (FIXING)
+**Error:** `No module named 'chromadb'`
+
+**Solution:** Installing ChromaDB now via `pip install chromadb`
+
+**Status:** ✅ Installation in progress
+
+---
+
+### 2. Gemini API Quota Exceeded (USER ACTION NEEDED)
+
+**Error:**
+```
+429 You exceeded your current quota, please check your plan and billing details
+Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests
+```
+
+**Issue:** You've hit the free tier rate limit for `gemini-2.0-flash-exp`
+
+**Solutions (Choose One):**
+
+#### Option A: Wait for Rate Limit to Reset ⏰
+- **Wait Time:** About 45-55 seconds (as shown in error)
+- **Limitation:** Free tier has very low limits per minute
+
+#### Option B: Switch to a Different Model ✅ RECOMMENDED
+Update your `.env` file to use `gemini-1.5-flash` which has higher free tier limits:
+
+```env
+LLM_MODEL_TYPE=gemini-1.5-flash
+```
+
+Then restart the backend server.
+
+#### Option C: Use Gemini 1.5 Pro (If Available)
+If you have access to paid tier:
+
+```env
+LLM_MODEL_TYPE=gemini-1.5-pro
+```
+
+#### Option D: Check Your API Key
+Verify that your API key is correct and active:
+1. Go to https://aistudio.google.com/apikey
+2. Check if your API key is valid
+3. Verify your quota at https://ai.dev/usage?tab=rate-limit
+
+---
+
+## 🔧 Quick Fix Steps
+
+### Step 1: Wait for ChromaDB Installation
+The installation is in progress. Once complete, restart your backend server.
+
+### Step 2: Fix API Quota
+
+**Recommended:** Update `.env` to use `gemini-1.5-flash`:
+
+```bash
+# In your .env file, change:
+LLM_MODEL_TYPE=gemini-1.5-flash
+```
+
+### Step 3: Restart Backend
+
+```bash
+cd backend
+python -m uvicorn src.app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+---
+
+## 📊 Rate Limits Comparison
+
+| Model | Free Tier RPM | Free Tier TPM |
+|-------|---------------|---------------|
+| gemini-2.0-flash-exp | Very Limited* | Very Limited* |
+| gemini-1.5-flash | 15 RPM | Higher |
+| gemini-1.5-pro | 2 RPM | Higher |
+
+*gemini-2.0-flash-exp has extremely low free tier limits as it's experimental
+
+---
+
+## 🎯 Next Steps
+
+1. ✅ ChromaDB will be installed shortly
+2. 🔄 Change `LLM_MODEL_TYPE` to `gemini-1.5-flash` in `.env`
+3. 🔄 Restart backend server
+4. ✅ Try indexing a repository
+5. ✅ Test chat functionality
+
+---
+
+## 🧪 Testing After Fix
+
+### Test Indexing:
+```bash
+curl -X POST http://localhost:8000/index_file/start \
+  -H "Content-Type: application/json" \
+  -d '{"repo_path": "/path/to/your/repo"}'
+```
+
+### Test Search:
+```bash
+curl -X POST http://localhost:8000/search/semantic \
+  -H "Content-Type: application/json" \
+  -d '{"query": "authentication function", "top_k": 5}'
+```
+
+### Test Chat (After Fixing Quota):
+```bash
+curl -X POST http://localhost:8000/chat/completion \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messages": [
+      {"role": "user", "content": "What does this codebase do?"}
+    ]
+  }'
+```

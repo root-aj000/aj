@@ -117,10 +117,10 @@ async def global_exception_handler(request, exc):
 from .routes import indexing, debug, chat, search, graph
 
 app.include_router(indexing.router, prefix="/index_file", tags=["indexing"])
-app.include_router(debug.router, prefix="/debug", tags=["debug"])
+app.include_router(debug.router, tags=["debug"])  # Has prefix="/debug" already
 app.include_router(chat.router, prefix="/chat", tags=["chat"])
-app.include_router(search.router, prefix="/search", tags=["search"])
-app.include_router(graph.router, prefix="/graph", tags=["graph"])
+app.include_router(search.router, tags=["search"])  # Has prefix="/search" already
+app.include_router(graph.router, tags=["graph"])  # Has prefix="/graph" already
 
 # Import and register v1.1 routes
 from .routes.v1_1_routes import router as v1_1_router
